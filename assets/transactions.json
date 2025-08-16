@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "name": "Groceries",
+    "amount": 50.5,
+    "date": "2025-08-16",
+    "status": "completed"
+  },
+  {
+    "id": "2",
+    "name": "Internet Bill",
+    "amount": 30,
+    "date": "2025-08-15",
+    "status": "pending"
+  },
+  {
+    "id": "3",
+    "name": "Movie",
+    "amount": 15,
+    "date": "2025-08-14",
+    "status": "completed"
+  }
+]

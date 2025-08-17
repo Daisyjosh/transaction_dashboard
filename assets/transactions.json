@@ -19,5 +19,26 @@
     "amount": 15,
     "date": "2025-08-14",
     "status": "completed"
+  },
+  {
+    "id": "4",
+    "name": "Grocery Shopping",
+    "amount": 50.25,
+    "date": "2025-08-16",
+    "status": "Pending"
+  },
+  {
+    "id": "5",
+    "name": "Salary",
+    "amount": 1200,
+    "date": "2025-08-15",
+    "status": "Completed"
+  },
+  {
+    "id": "6",
+    "name": "Credit Card Payment",
+    "amount": 300,
+    "date": "2025-08-14",
+    "status": "Flagged"
   }
 ]

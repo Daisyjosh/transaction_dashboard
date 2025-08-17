@@ -5,25 +5,26 @@ class ThemeProvider with ChangeNotifier {
   bool _isDark = false;
 
   bool get isDark => _isDark;
-  ThemeMode get themeMode => _isDark ? ThemeMode.dark : ThemeMode.light;
 
   ThemeProvider() {
-    _loadTheme();
+    loadTheme();
   }
+
+  ThemeMode get themeMode => _isDark ? ThemeMode.dark : ThemeMode.light;
 
   void toggleTheme() {
     _isDark = !_isDark;
-    _saveTheme();
+    saveTheme();
     notifyListeners();
   }
 
-  Future<void> _loadTheme() async {
+  Future<void> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     _isDark = prefs.getBool('isDark') ?? false;
     notifyListeners();
   }
 
-  Future<void> _saveTheme() async {
+  Future<void> saveTheme() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isDark', _isDark);
   }

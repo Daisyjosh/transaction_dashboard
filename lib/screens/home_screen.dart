@@ -1,47 +1,130 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../models/transaction_model.dart';
 import '../providers/transaction_provider.dart';
 import '../providers/theme_provider.dart';
-import '../widgets/transaction_card.dart';
-import '../widgets/empty_transactions.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final List<String> columns = ['Pending', 'Completed', 'Flagged'];
+
+  @override
+  void initState() {
+    super.initState();
+    final transactionProvider =
+    Provider.of<TransactionProvider>(context, listen: false);
+    transactionProvider.loadTransactions();
+  }
 
   @override
   Widget build(BuildContext context) {
     final transactionProvider = Provider.of<TransactionProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark = themeProvider.isDark;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("Transaction Dashboard"),
         actions: [
           IconButton(
-            icon: Icon(isDark ? Icons.dark_mode : Icons.light_mode),
-            onPressed: () => themeProvider.toggleTheme(),
+            icon: Icon(
+              themeProvider.isDark ? Icons.light_mode : Icons.dark_mode,
+            ),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
           ),
         ],
       ),
-      body: transactionProvider.transactions.isEmpty
-          ? const EmptyTransactions()
-          : ListView.builder(
-        itemCount: transactionProvider.transactions.length,
-        itemBuilder: (context, index) {
-          final tx = transactionProvider.transactions[index];
-          return TransactionCard(transaction: tx);
-        },
+      body: Row(
+        children: columns.map((status) {
+          final items = transactionProvider.transactions
+              .where((t) => t.status == status)
+              .toList();
+
+          return Expanded(
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  color: Colors.grey[300],
+                  child: Text(
+                    status,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ),
+                Expanded(
+                  child: DragTarget<TransactionModel>(
+                    onAccept: (transaction) {
+                      transactionProvider.updateStatus(transaction, status);
+                    },
+                    builder: (context, candidateData, rejectedData) {
+                      return ListView(
+                        padding: const EdgeInsets.all(8),
+                        children: items.map((t) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4),
+                            child: Draggable<TransactionModel>(
+                              data: t,
+                              feedback: Material(
+                                elevation: 4,
+                                child: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  color: Colors.blueAccent,
+                                  child: Text(
+                                    "${t.name} - \$${t.amount.toStringAsFixed(2)}",
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 16),
+                                  ),
+                                ),
+                              ),
+                              childWhenDragging: Container(
+                                color: Colors.grey[200],
+                                child: ListTile(
+                                  title: Text(t.name),
+                                  subtitle: Text("\$${t.amount}"),
+                                ),
+                              ),
+                              child: Container(
+                                color: Colors.white,
+                                child: ListTile(
+                                  title: Text(t.name),
+                                  subtitle: Text(
+                                      "\$${t.amount.toStringAsFixed(2)} | ${t.date}"),
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
         onPressed: () {
           transactionProvider.addTransaction(
-            transactionProvider.transactions.isEmpty
-                ? transactionProvider.transactions.first
-                : transactionProvider.transactions.last,
+            TransactionModel(
+              id: DateTime.now().millisecondsSinceEpoch.toString(),
+              name: "Sample Transaction",
+              amount: 50.0,
+              date: DateTime.now().toIso8601String(),
+              status: 'Pending',
+            ),
           );
         },
+        child: const Icon(Icons.add),
       ),
     );
   }

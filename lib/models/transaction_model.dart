@@ -2,8 +2,8 @@ class TransactionModel {
   final String id;
   final String name;
   final double amount;
-  final String date;
-  final String status;
+  final String date; // ISO string
+  String status; // mutable for drag & drop
 
   TransactionModel({
     required this.id,
@@ -23,13 +23,11 @@ class TransactionModel {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'amount': amount,
-      'date': date,
-      'status': status,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'amount': amount,
+    'date': date,
+    'status': status,
+  };
 }

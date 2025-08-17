@@ -20,22 +20,24 @@ class TransactionApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, _) => MaterialApp(
-          title: 'Transaction Dashboard',
-          debugShowCheckedModeBanner: false,
-          themeMode: themeProvider.themeMode,
-          theme: ThemeData(
-            useMaterial3: true,
-            colorSchemeSeed: Colors.teal,
-            brightness: Brightness.light,
-          ),
-          darkTheme: ThemeData(
-            useMaterial3: true,
-            colorSchemeSeed: Colors.teal,
-            brightness: Brightness.dark,
-          ),
-          home: const HomeScreen(),
-        ),
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: "Transaction Dashboard",
+            theme: ThemeData(
+              useMaterial3: true,
+              colorSchemeSeed: Colors.teal,
+              brightness: Brightness.light,
+            ),
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              colorSchemeSeed: Colors.teal,
+              brightness: Brightness.dark,
+            ),
+            themeMode: themeProvider.themeMode,
+            home: const HomeScreen(),
+          );
+        },
       ),
     );
   }
